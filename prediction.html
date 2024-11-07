@@ -91,18 +91,11 @@
             background-color: #3a5f85;
         }
 
-        .result-field {
-            width: 100%;
-            padding: 10px;
-            margin-top: 15px;
-            font-size: 1.2em;
-            text-align: center;
-            border: 2px dashed #fff;
-            border-radius: 5px;
-            color: #333;
-            background-color: #f5f5f5;
+        .prediction-text {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #fff;
             font-weight: bold;
-            outline: none;
         }
 
         .note {
@@ -114,78 +107,46 @@
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>Dragon vs. Tiger Prediction</h1>
         
-        <div class="card-input">
-            <label for="dragonCard">Enter Dragon Card Value 🐉 (1-13)</label>
-            <input type="number" id="dragonCard" min="1" max="13" placeholder="Dragon Card" required>
-        </div>
-        
-        <div class="card-input">
-            <label for="tigerCard">Enter Tiger Card Value 🐅 (1-13)</label>
-            <input type="number" id="tigerCard" min="1" max="13" placeholder="Tiger Card" required>
-        </div>
-        
-        <button class="predict-btn" onclick="showPrediction()">Show Result</button>
-        <button class="reset-btn" onclick="resetFields()">Reset</button>
-        
-        <input type="text" id="resultField" class="result-field" placeholder="Prediction: " readonly>
+        <button class="predict-btn" onclick="generatePrediction()">Generate Prediction</button>
+        <p id="prediction" class="prediction-text"></p>
 
         <p class="note">Note: This prediction is random and avoids consecutive repeats.</p>
     </div>
 
     <script>
-        let lastPrediction = "";
+        let lastPrediction = null; // To store the last prediction
 
-        function showPrediction() {
-            const dragonCard = document.getElementById('dragonCard').value;
-            const tigerCard = document.getElementById('tigerCard').value;
-            const resultField = document.getElementById('resultField');
+        function generatePrediction() {
+            const predictionField = document.getElementById("prediction");
+            predictionField.textContent = ""; // Clear current text for animation
 
-            // Validate card inputs
-            if (dragonCard < 1 || dragonCard > 13 || tigerCard < 1 || tigerCard > 13) {
-                resultField.value = "Please enter valid card values (1-13)!";
-                resultField.style.color = "#ff0000";
-                return;
+            // Generate a random prediction (Tiger or Dragon)
+            const random = Math.random(); // Random number between 0 and 1
+            let newPrediction;
+
+            // Avoid repeating the same prediction twice in a row
+            if (random < 0.5) {
+                newPrediction = lastPrediction === "Tiger" ? "Dragon" : "Tiger";
+            } else {
+                newPrediction = lastPrediction === "Dragon" ? "Tiger" : "Dragon";
             }
-            
-            // Generate a new prediction that is different from the last one
-            let prediction;
-            do {
-                prediction = Math.random() < 0.5 ? "Dragon" : "Tiger";
-            } while (prediction === lastPrediction);
-            lastPrediction = prediction;
 
-            animatePrediction(prediction);
-        }
+            lastPrediction = newPrediction; // Update last prediction
 
-        function animatePrediction(prediction) {
-            const resultField = document.getElementById('resultField');
-            resultField.value = ""; // Clear the result field
-            resultField.style.color = "#333";
-
-            let currentText = "Prediction: " + prediction;
+            // Show prediction letter by letter with animation
             let index = 0;
             const interval = setInterval(() => {
-                if (index < currentText.length) {
-                    resultField.value += currentText.charAt(index);
+                if (index < newPrediction.length) {
+                    predictionField.textContent += newPrediction[index];
                     index++;
                 } else {
                     clearInterval(interval);
                 }
-            }, 1000 / currentText.length); // Adjust speed based on length
-        }
-
-        function resetFields() {
-            document.getElementById('dragonCard').value = '';
-            document.getElementById('tigerCard').value = '';
-            document.getElementById('resultField').value = '';
-            document.getElementById('resultField').style.color = '#333';
-            lastPrediction = ""; // Reset the last prediction
+            }, 1000 / newPrediction.length); // Animation duration of 1 second
         }
     </script>
-
 </body>
 </html>
