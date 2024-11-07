@@ -99,10 +99,19 @@
             text-align: center;
             border: 2px dashed #fff;
             border-radius: 5px;
-            color: #333;
-            background-color: #f5f5f5;
             font-weight: bold;
             outline: none;
+            color: #fff;
+            background-color: white;
+            transition: color 0.3s, background-color 0.3s;
+        }
+
+        .dragon {
+            color:#90EE90;
+        }
+
+        .tiger {
+            color: orange;
         }
 
         .note {
@@ -131,60 +140,42 @@
         <button class="predict-btn" onclick="generatePrediction()">Generate Prediction</button>
         <button class="reset-btn" onclick="resetFields()">Reset</button>
         
-        <p id="prediction" class="result-field"></p>
+        <p id="prediction" class="result-field">Prediction: </p>
 
-        <p class="note">Note: This prediction is random and avoids consecutive repeats.</p>
+        <p class="note">Note: This prediction is purely random and does not depend on the input values.</p>
     </div>
 
     <script>
-        let lastPrediction = null; // To store the last prediction
-
         function generatePrediction() {
             const predictionField = document.getElementById("prediction");
-            const dragonCard = document.getElementById("dragonCard").value;
-            const tigerCard = document.getElementById("tigerCard").value;
 
-            // Validate card inputs
-            if (dragonCard < 1 || dragonCard > 13 || tigerCard < 1 || tigerCard > 13) {
-                predictionField.textContent = "Please enter valid card values (1-13)!";
-                predictionField.style.color = "#ff0000";
-                return;
-            }
+            // Generate a random prediction
+            const prediction = Math.random() < 0.5 ? "Dragon" : "Tiger";
 
-            predictionField.textContent = ""; // Clear current text for animation
+            // Update the field color immediately
+            predictionField.className = `result-field ${prediction.toLowerCase()}`;
 
-            // Generate a random prediction (Tiger or Dragon)
-            const random = Math.random(); // Random number between 0 and 1
-            let newPrediction;
-
-            // Avoid repeating the same prediction twice in a row
-            if (random < 0.5) {
-                newPrediction = lastPrediction === "Tiger" ? "Dragon" : "Tiger";
-            } else {
-                newPrediction = lastPrediction === "Dragon" ? "Tiger" : "Dragon";
-            }
-
-            lastPrediction = newPrediction; // Update last prediction
-
-            // Show prediction letter by letter with animation
+            // Animate the prediction text letter by letter
+            const fullText = `Prediction: ${prediction}`;
             let index = 0;
+            predictionField.textContent = ""; // Clear the field for animation
+
             const interval = setInterval(() => {
-                if (index < newPrediction.length) {
-                    predictionField.textContent += newPrediction[index];
+                if (index < fullText.length) {
+                    predictionField.textContent += fullText[index];
                     index++;
                 } else {
                     clearInterval(interval);
                 }
-            }, 1000 / newPrediction.length); // Animation duration of 1 second
+            }, 1000 / fullText.length); // Animation duration
         }
 
         function resetFields() {
             document.getElementById('dragonCard').value = '';
             document.getElementById('tigerCard').value = '';
             const predictionField = document.getElementById("prediction");
-            predictionField.textContent = '';
-            predictionField.style.color = '#333';
-            lastPrediction = null; // Reset the last prediction
+            predictionField.textContent = 'Prediction: ';
+            predictionField.className = 'result-field'; // Reset colors and text
         }
     </script>
 
