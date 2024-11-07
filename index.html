@@ -85,11 +85,27 @@
             color: #ff6b6b;
             margin-top: 10px;
         }
+
+        .success-message {
+            font-size: 1.1em;
+            color: green;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .date-time {
+            font-size: 1em;
+            color: #fff;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- Display current date and time -->
+        <div id="dateTime" class="date-time"></div>
+        
         <h1>Enter Password</h1>
         <div class="password-input">
             <label for="password">Password</label>
@@ -97,22 +113,46 @@
         </div>
         <button class="login-btn" onclick="checkPassword()">Login</button>
         <p id="errorMessage" class="error-message"></p>
+        <p id="successMessage" class="success-message">Login Success!</p>
     </div>
 
     <script>
+        // Function to display the current date and time
+        function displayDateTime() {
+            const dateTimeElement = document.getElementById('dateTime');
+            const now = new Date();
+            const date = now.toLocaleDateString();
+            const time = now.toLocaleTimeString();
+            dateTimeElement.textContent = `Date: ${date} | Time: ${time}`;
+        }
+
+        // Update the date and time every second
+        setInterval(displayDateTime, 1000);
+
+        // Password check function
         function checkPassword() {
             const passwordInput = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
 
-            // Replace '12345' with your desired password
+            // Replace 'cherry11' with your desired password
             const correctPassword = "cherry11";
 
             if (passwordInput === correctPassword) {
-                // Redirect to the prediction page
-                window.location.href = "prediction.html"; // Replace with the correct file name
+                // Show success message
+                successMessage.style.display = "block"; // Show success message
+                errorMessage.textContent = ""; // Clear error message
+                successMessage.style.color = "green"; // Green for success
+
+                // Redirect to the prediction page after a short delay
+                setTimeout(function() {
+                    window.location.href = "prediction.html"; // Replace with the correct file name
+                }, 1000); // Wait 1 second before redirect
             } else {
-                // Show error message
-                errorMessage.textContent = "Incorrect password. Please try again.";
+                // Show error message in dark red
+                errorMessage.textContent = "Wrong Password!";
+                errorMessage.style.color = "darkred"; // Change text color to dark red
+                successMessage.style.display = "none"; // Hide success message if wrong password
             }
         }
     </script>
