@@ -91,11 +91,18 @@
             background-color: #3a5f85;
         }
 
-        .prediction-text {
-            margin-top: 20px;
-            font-size: 1.5em;
-            color: #fff;
+        .result-field {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 1.2em;
+            text-align: center;
+            border: 2px dashed #fff;
+            border-radius: 5px;
+            color: #333;
+            background-color: #f5f5f5;
             font-weight: bold;
+            outline: none;
         }
 
         .note {
@@ -107,11 +114,24 @@
     </style>
 </head>
 <body>
+
     <div class="container">
         <h1>Dragon vs. Tiger Prediction</h1>
         
+        <div class="card-input">
+            <label for="dragonCard">Enter Dragon Card Value 🐉 (1-13)</label>
+            <input type="number" id="dragonCard" min="1" max="13" placeholder="Dragon Card" required>
+        </div>
+        
+        <div class="card-input">
+            <label for="tigerCard">Enter Tiger Card Value 🐅 (1-13)</label>
+            <input type="number" id="tigerCard" min="1" max="13" placeholder="Tiger Card" required>
+        </div>
+        
         <button class="predict-btn" onclick="generatePrediction()">Generate Prediction</button>
-        <p id="prediction" class="prediction-text"></p>
+        <button class="reset-btn" onclick="resetFields()">Reset</button>
+        
+        <p id="prediction" class="result-field"></p>
 
         <p class="note">Note: This prediction is random and avoids consecutive repeats.</p>
     </div>
@@ -121,6 +141,16 @@
 
         function generatePrediction() {
             const predictionField = document.getElementById("prediction");
+            const dragonCard = document.getElementById("dragonCard").value;
+            const tigerCard = document.getElementById("tigerCard").value;
+
+            // Validate card inputs
+            if (dragonCard < 1 || dragonCard > 13 || tigerCard < 1 || tigerCard > 13) {
+                predictionField.textContent = "Please enter valid card values (1-13)!";
+                predictionField.style.color = "#ff0000";
+                return;
+            }
+
             predictionField.textContent = ""; // Clear current text for animation
 
             // Generate a random prediction (Tiger or Dragon)
@@ -147,6 +177,16 @@
                 }
             }, 1000 / newPrediction.length); // Animation duration of 1 second
         }
+
+        function resetFields() {
+            document.getElementById('dragonCard').value = '';
+            document.getElementById('tigerCard').value = '';
+            const predictionField = document.getElementById("prediction");
+            predictionField.textContent = '';
+            predictionField.style.color = '#333';
+            lastPrediction = null; // Reset the last prediction
+        }
     </script>
+
 </body>
 </html>
