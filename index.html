@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon vs. Tiger Prediction</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff6b6b, #4b79a1);
+            color: #fff;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .card-input {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            font-size: 1.1em;
+            margin: 10px 0 5px;
+        }
+
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            text-align: center;
+            outline: none;
+            transition: box-shadow 0.3s;
+            color: #333;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        .predict-btn, .reset-btn {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 1em;
+            font-weight: bold;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .predict-btn {
+            background-color: #ff6b6b;
+        }
+
+        .predict-btn:hover {
+            background-color: #e75454;
+        }
+
+        .reset-btn {
+            background-color: #4b79a1;
+        }
+
+        .reset-btn:hover {
+            background-color: #3a5f85;
+        }
+
+        .result-field {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 1.2em;
+            text-align: center;
+            border: 2px dashed #fff;
+            border-radius: 5px;
+            color: #333;
+            background-color: #f5f5f5;
+            font-weight: bold;
+            outline: none;
+        }
+
+        .note {
+            font-size: 0.9em;
+            color: #eee;
+            margin-top: 15px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Dragon vs. Tiger Prediction</h1>
+        
+        <div class="card-input">
+            <label for="dragonCard">Enter Dragon Card Value (1-13)</label>
+            <input type="number" id="dragonCard" min="1" max="13" placeholder="Dragon Card" required>
+        </div>
+        
+        <div class="card-input">
+            <label for="tigerCard">Enter Tiger Card Value (1-13)</label>
+            <input type="number" id="tigerCard" min="1" max="13" placeholder="Tiger Card" required>
+        </div>
+        
+        <button class="predict-btn" onclick="showPrediction()">Show Result</button>
+        <button class="reset-btn" onclick="resetFields()">Reset</button>
+        
+        <input type="text" id="resultField" class="result-field" placeholder="Prediction: " readonly>
+
+        <p class="note">Note: This prediction is random and avoids consecutive repeats.</p>
+    </div>
+
+    <script>
+        let lastPrediction = "";
+
+        function showPrediction() {
+            const dragonCard = document.getElementById('dragonCard').value;
+            const tigerCard = document.getElementById('tigerCard').value;
+            const resultField = document.getElementById('resultField');
+
+            // Validate card inputs
+            if (dragonCard < 1 || dragonCard > 13 || tigerCard < 1 || tigerCard > 13) {
+                resultField.value = "Please enter valid card values (1-13)!";
+                resultField.style.color = "#ff0000";
+                return;
+            }
+            
+            // Generate a new prediction that is different from the last one
+            let prediction;
+            do {
+                prediction = Math.random() < 0.5 ? "Dragon" : "Tiger";
+            } while (prediction === lastPrediction);
+            lastPrediction = prediction;
+
+            animatePrediction(prediction);
+        }
+
+        function animatePrediction(prediction) {
+            const resultField = document.getElementById('resultField');
+            resultField.value = ""; // Clear the result field
+            resultField.style.color = "#333";
+
+            let currentText = "Prediction: " + prediction;
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index < currentText.length) {
+                    resultField.value += currentText.charAt(index);
+                    index++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 1000 / currentText.length); // Adjust speed based on length
+        }
+
+        function resetFields() {
+            document.getElementById('dragonCard').value = '';
+            document.getElementById('tigerCard').value = '';
+            document.getElementById('resultField').value = '';
+            document.getElementById('resultField').style.color = '#333';
+            lastPrediction = ""; // Reset the last prediction
+        }
+    </script>
+
+</body>
+</html>
