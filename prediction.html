@@ -76,19 +76,19 @@
         }
 
         .predict-btn {
-            background-color: #ff6b6b;
+            background-color: #ff6b6b; /* Dragon button color */
         }
 
         .predict-btn:hover {
-            background-color: #e75454;
+            background-color: #e75454; /* Dragon button hover color */
         }
 
         .reset-btn {
-            background-color: #4b79a1;
+            background-color: #4b79a1; /* Tiger button color */
         }
 
         .reset-btn:hover {
-            background-color: #3a5f85;
+            background-color: #3a5f85; /* Tiger button hover color */
         }
 
         .result-field {
@@ -97,29 +97,27 @@
             margin-top: 15px;
             font-size: 1.2em;
             text-align: center;
-            border: 2px dashed #fff;
-            border-radius: 5px;
-            font-weight: bold;
-            outline: none;
-            color: #fff;
-            background-color: white;
-            transition: color 0.3s, background-color 0.3s;
+            border-radius: 5px; 
+            font-weight: bold; 
+            outline: none; 
+            color:#333; /* Text color */
+            background-color:white; /* White background for results */
         }
 
         .dragon {
-            color:#90EE90;
-        }
+           color:#90EE90; /* Dragon color */
+       }
 
-        .tiger {
-            color: orange;
-        }
+       .tiger {
+           color : orange; /* Tiger color */
+       }
 
-        .note {
-            font-size: 0.9em;
-            color: #eee;
-            margin-top: 15px;
-            opacity: 0.8;
-        }
+       .note {
+           font-size :0.9em; 
+           color :#eee; 
+           margin-top :15px; 
+           opacity :0.8; 
+       }
     </style>
 </head>
 <body>
@@ -128,55 +126,118 @@
         <h1>Dragon vs. Tiger Prediction</h1>
         
         <div class="card-input">
-            <label for="dragonCard">Enter Dragon Card Value 🐉 (1-13)</label>
-            <input type="number" id="dragonCard" min="1" max="13" placeholder="Dragon Card" required>
-        </div>
-        
-        <div class="card-input">
-            <label for="tigerCard">Enter Tiger Card Value 🐅 (1-13)</label>
-            <input type="number" id="tigerCard" min="1" max="13" placeholder="Tiger Card" required>
-        </div>
-        
-        <button class="predict-btn" onclick="generatePrediction()">Generate Prediction</button>
-        <button class="reset-btn" onclick="resetFields()">Reset</button>
-        
-        <p id="prediction" class="result-field">Prediction: </p>
+          <label for="dragonCard">Enter Dragon Card Value 🐉 (1-13)</label>
+          <input type="number" id="dragonCard" min="1" max="13" placeholder="Dragon Card" required>
+      </div>
+      
+      <div class="card-input">
+          <label for="tigerCard">Enter Tiger Card Value 🐅 (1-13)</label>
+          <input type="number" id="tigerCard" min="1" max="13" placeholder="Tiger Card" required>
+      </div>
+      
+      <button class="predict-btn" onclick="generatePrediction()">Generate Prediction</button>
+      <button class="reset-btn" onclick="resetFields()">Reset</button>
+      
+      <p id="prediction" class="result-field"> </p>
 
-        <p class="note">Note : Gambling is addictive , We are not responsible for any losses Play Responsibly! </p>
+      <p class="note">Note : Gambling is addictive , We are not responsible for any losses Play Responsibly!</p>
     </div>
 
     <script>
-        function generatePrediction() {
-            const predictionField = document.getElementById("prediction");
+      function predictOutcome(dragonCard, tigerCard) {
+          const total = dragonCard + tigerCard;
 
-            // Generate a random prediction
-            const prediction = Math.random() < 0.5 ? "Dragon" : "Tiger";
+          return total % 2 === 1 ? "Dragon" : "Tiger";
+      }
 
-            // Update the field color immediately
-            predictionField.className = `result-field ${prediction.toLowerCase()}`;
+      function secondTrick(dragonCard, tigerCard) {
+          const dragonNumbers = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25];
+          const tigerNumbers = [2,4 ,5 ,8 ,10 ,12 ,14 ,16 ,18 ,20 ,22 ,24];
 
-            // Animate the prediction text letter by letter
-            const fullText = `Prediction : ${prediction}`;
-            let index = 0;
-            predictionField.textContent = ""; // Clear the field for animation
+          if (dragonNumbers.includes(dragonCard)) {
+              return "Dragon";
+          } else if (tigerNumbers.includes(tigerCard)) {
+              return "Tiger";
+          } else {
+              return "No valid outcome";
+          }
+      }
 
-            const interval = setInterval(() => {
-                if (index < fullText.length) {
-                    predictionField.textContent += fullText[index];
-                    index++;
-                } else {
-                    clearInterval(interval);
-                }
-            }, 1000 / fullText.length); // Animation duration
-        }
+      function thirdTrick(dragonCard, tigerCard) {
+          const average = (dragonCard + tigerCard) / 2;
 
-        function resetFields() {
-            document.getElementById('dragonCard').value = '';
-            document.getElementById('tigerCard').value = '';
-            const predictionField = document.getElementById("prediction");
-            predictionField.textContent = 'Prediction: ';
-            predictionField.className = 'result-field'; // Reset colors and text
-        }
+          return average < 8 ? "Tiger" : "Dragon";
+      }
+
+      function generatePrediction() {
+          const dragonCard = parseInt(document.getElementById("dragonCard").value);
+          const tigerCard = parseInt(document.getElementById("tigerCard").value);
+          
+          if (isNaN(dragonCard) || isNaN(tigerCard)) {
+              alert("Please enter valid numeric values for both cards.");
+              return; // Exit if inputs are invalid
+          }
+          
+          // Get predictions from all tricks
+          const outcomes = [
+              predictOutcome(dragonCard, tigerCard),
+              secondTrick(dragonCard, tigerCard),
+              thirdTrick(dragonCard, tigerCard)
+          ];
+
+          // Count occurrences of each outcome
+          const outcomeCount = {};
+          outcomes.forEach(outcome => {
+              if (outcome !== "No valid outcome") { // Ignore invalid outcomes
+                  outcomeCount[outcome] = (outcomeCount[outcome] || 0) + 1;
+              }
+          });
+
+          // Determine the majority outcome
+          let finalOutcome = "No valid outcome"; // Default value
+          for (const [outcome, count] of Object.entries(outcomeCount)) {
+              if (count >=2) { // If any outcome appears at least twice
+                  finalOutcome = outcome; 
+                  break; // Stop after finding the first valid majority outcome
+              }
+          }
+          
+          // Display the result with animation
+          const predictionField = document.getElementById("prediction");
+          
+          if(finalOutcome !== "No valid outcome") {
+              animatePrediction(finalOutcome); // Only show Dragon or Tiger
+              predictionField.className = `result-field ${finalOutcome.toLowerCase()}`; // Set class for styling
+          } else {
+              animatePrediction("No majority outcome"); // Show this if no majority found
+              predictionField.className = 'result-field'; // Reset colors and text
+          }
+      }
+
+      function animatePrediction(text) {
+          const predictionField = document.getElementById("prediction");
+          predictionField.textContent = ""; // Clear previous text
+
+          let index = 0;
+
+          const interval = setInterval(() => {
+              if (index < text.length) {
+                  predictionField.textContent += text[index];
+                  index++;
+              } else {
+                  clearInterval(interval); // Stop when done
+              }
+          }, 75); // Increased speed by reducing interval time to show letters faster
+      }
+
+      function resetFields() {
+          document.getElementById('dragonCard').value = '';
+          document.getElementById('tigerCard').value = '';
+          
+          const predictionField = document.getElementById("prediction");
+          predictionField.textContent = ''; // Clear prediction field
+          predictionField.className = 'result-field'; // Reset colors and text
+      }
     </script>
 
 </body>
